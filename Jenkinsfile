@@ -47,12 +47,8 @@ pipeline {
             steps {
                 script {
                    echo 'deploying docker image...'
-                   sh 'kubectl get all'
-                   sh 'kubectl delete deployment java-maven-app'
-                   sh 'kubectl delete service java-maven-app'
-                   sh 'kubectl get all'
-                   sh '#envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
-                   sh '#envsubst < kubernetes/service.yaml | kubectl apply -f -'
+                   sh 'envsubst < kubernetes/deployment.yaml | kubectl apply -f -'
+                   sh 'envsubst < kubernetes/service.yaml | kubectl apply -f -'
                 }
             }
         }
