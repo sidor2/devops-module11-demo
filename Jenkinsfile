@@ -5,6 +5,9 @@ pipeline {
     tools {
         maven 'Maven'
     }
+    environment {
+        DOCKER_REPO = 'aminaaahmed323/demo-app' // Define DOCKER_REPO if needed
+    }
     stages {
         stage('Increment version') {
             steps {
@@ -15,7 +18,7 @@ pipeline {
                        "versions:commit"
                     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
                     def version = matcher[0][1]
-                    env.IMAGE_NAME = "${version}-${BUILD_NUMBER}"
+                    env.IMAGE_NAME = "${version}-${env.BUILD_NUMBER}"
                 }
             }
         }
@@ -32,9 +35,9 @@ pipeline {
                 script {
                     echo 'Building the Docker image...'
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "docker build -t ${DOCKER_REPO}:${env.IMAGE_NAME} ."
-                        sh "echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}"
-                        sh "docker push ${DOCKER_REPO}:${env.IMAGE_NAME}"
+                        sh "docker build -t ${env.DOCKER_REPO}:${env.IMAGE_NAME} ."
+                        sh "echo $PASS | docker login -u $USER --password-stdin ${env.DOCKER_REPO_SERVER}"
+                        sh "docker push ${env.DOCKER_REPO}:${env.IMAGE_NAME}"
                     }
                 }
             }
