@@ -11,12 +11,12 @@ pipeline {
         DOCKER_REPO = 'aminaaahmed323/demo-app'
     }
     stages {
-        stage('increment version') {
+        stage('Increment version') {
             steps {
                 script {
                     echo 'Incrementing app version...'
                     sh 'mvn build-helper:parse-version versions:set ' +
-                       '-DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} ' +
+                       '-DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion} ' +
                        'versions:commit'
                     def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
                     def version = matcher[0][1]
@@ -24,7 +24,7 @@ pipeline {
                 }
             }
         }
-        stage('build app') {
+        stage('Build app') {
             steps {
                 script {
                     echo 'Building the application...'
@@ -32,7 +32,7 @@ pipeline {
                 }
             }
         }
-        stage('build image') {
+        stage('Build image') {
             steps {
                 script {
                     echo 'Building the Docker image...'
@@ -44,22 +44,10 @@ pipeline {
                 }
             }
         }
-        stage('deploy') {
+        stage('Deploy') {
             steps {
                 script {
                     echo 'Deploying Docker image...'
-                }
-            }
-        }
-        stage('commit version update') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'gitlab-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "git remote set-url origin https://${USER}:${PASS}@gitlab.com/aminaahmed-cloud/java-maven-app.git"
-                        sh 'git add .'
-                        sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:jenkins-jobs'
-                    }
                 }
             }
         }
