@@ -1,9 +1,14 @@
 #!/usr/bin/env groovy
 
+def DOCKER_REPO = aminaaahmed323/demo-app
+
 pipeline {   
     agent any
     tools {
         maven 'Maven'
+    }
+     environment {
+        DOCKER_REPO = aminaaahmed323/demo-app
     }
     stages {
         stage('increment version') {
