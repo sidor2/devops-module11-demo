@@ -31,6 +31,9 @@ pipeline {
         }
 
         stage("deploy") {
+            // environment {
+            //     KUBECONFIG = credentials('kubeconfig')
+            // }
             steps {
                 script {
                     gv.deployApp()
