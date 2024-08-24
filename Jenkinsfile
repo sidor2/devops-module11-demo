@@ -13,6 +13,15 @@ pipeline {
                 }
             }
         }
+
+        stage("incerement version") {
+            steps {
+                script {
+                    gv.incrementVersion()
+                }
+            }
+        }
+
         stage("build jar") {
             steps {
                 script {
@@ -31,14 +40,24 @@ pipeline {
         }
 
         stage("deploy") {
-            // environment {
-            //     KUBECONFIG = credentials('kubeconfig')
-            // }
+            environment {
+                // KUBECONFIG = credentials('kubeconfig')
+                APP_NAME = 'eks-demo-app'
+            }
             steps {
                 script {
                     gv.deployApp()
                 }
             }
-        }               
+        }
+
+        stage("commit to github") {
+            steps {
+                script {
+                    gv.commitToGithub('github-key', 'eks-demo-app', 'main')
+                }
+            }
+        }
+
     }
 } 
