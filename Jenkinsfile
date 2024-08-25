@@ -5,6 +5,12 @@ pipeline {
     tools {
         maven 'Maven'
     }
+    
+    environment {
+        DOCKER_REPO_SERVER = '851725525319.dkr.ecr.us-west-2.amazonaws.com'
+        DOCKER_REPO = '${DOCKER_REPO_SERVER}/eks-demo-app'
+    }
+
     stages {
         stage("init") {
             steps {
