@@ -8,7 +8,7 @@ pipeline {
     
     environment {
         DOCKER_REPO_SERVER = '851725525319.dkr.ecr.us-west-2.amazonaws.com'
-        DOCKER_REPO = '${DOCKER_REPO_SERVER}/eks-demo-app'
+        DOCKER_REPO = "${DOCKER_REPO_SERVER}/eks-demo-app"
     }
 
     stages {
@@ -60,7 +60,7 @@ pipeline {
         stage("commit to github") {
             steps {
                 script {
-                    gv.commitToGithub('github-key', 'devops-module11-demo', 'main')
+                    gv.commitToGithub('github-key', 'devops-module11-demo', 'with-ecr')
                 }
             }
         }
