@@ -31,20 +31,19 @@ def deployApp() {
 }
 
 def commitToGithub(String sshkey, String reponame, String branchname) {
-    script.sshagent(["$sshkey"]) {
-        script.sh 'git config --global user.email "jenkins@example.com"'
-        script.sh 'git config --global user.name "jenkins"'
+    sshagent(["$sshkey"]) {
+        sh 'git config --global user.email "jenkins@example.com"'
+        sh 'git config --global user.name "jenkins"'
 
-        script.sh 'git status'
-        script.sh 'git branch'
-        script.sh 'git config --list'
+        sh 'git status'
+        sh 'git branch'
+        sh 'git config --list'
 
-        script.sh "git remote set-url origin git@github.com:sidor2/$reponame\\.git"
-        script.sh 'git add .'
-        script.sh 'git commit -m "ci: version bump"'
-        script.sh "git push origin HEAD:$branchname"
+        sh "git remote set-url origin git@github.com:sidor2/$reponame\\.git"
+        sh 'git add .'
+        sh 'git commit -m "ci: version bump"'
+        sh "git push origin HEAD:$branchname"
     }
 }
-
 
 return this
