@@ -26,8 +26,8 @@ def buildImage() {
 def deployApp() {
     echo 'deploying the application...'
     // sh 'kubectl create deployment nginx-deployment --image=ilsoldier/eks-demo-app:${IMAGE_NAME}'
-    sh 'envsubst < Kubernetes/deployment.yaml | kubectl apply -f '
-    sh 'envsubst < Kubernetes/service.yaml | kubectl apply -f '
+    sh 'envsubst < Kubernetes/deployment.yaml | kubectl apply -f -'
+    sh 'envsubst < Kubernetes/service.yaml | kubectl apply -f -'
 }
 
 def commitToGithub(String sshkey, String reponame, String branchname) {
