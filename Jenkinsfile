@@ -54,7 +54,7 @@ pipeline {
         stage("commit to github") {
             steps {
                 script {
-                    gv.commitToGithub('github-key', 'eks-demo-app', 'main')
+                    gv.commitToGithub('github-key', 'devops-module11-demo', 'main')
                 }
             }
         }
