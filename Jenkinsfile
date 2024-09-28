@@ -47,7 +47,6 @@ pipeline {
 
         stage("deploy") {
             environment {
-                // KUBECONFIG = credentials('kubeconfig')
                 APP_NAME = 'eks-demo-app'
             }
             steps {
