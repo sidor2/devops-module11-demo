@@ -17,10 +17,10 @@ def buildJar() {
 def buildImage() {
     echo "building the docker image..."
     // withCredentials([usernamePassword(credentialsId: 'ecr-creds', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-    sh '''
-    aws ecr get-login-password --region us-west-2 --profile iam-roles-anywhere | \
-    docker login --username AWS --password-stdin 851725525319.dkr.ecr.us-west-2.amazonaws.com
-    '''
+    // sh '''
+    // aws ecr get-login-password --region us-west-2 --profile iam-roles-anywhere | \
+    // docker login --username AWS --password-stdin 851725525319.dkr.ecr.us-west-2.amazonaws.com
+    // '''
     sh 'docker build -t ${DOCKER_REPO}:${IMAGE_NAME} .'
     sh 'echo $PASS | docker login -u $USER --password-stdin ${DOCKER_REPO_SERVER}'
     sh 'docker push ${DOCKER_REPO}:${IMAGE_NAME}'
