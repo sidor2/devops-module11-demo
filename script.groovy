@@ -16,18 +16,32 @@ def buildJar() {
 
 def buildImage() {
     echo "building the docker image..."
-    withCredentials([usernamePassword(credentialsId: 'jenkins-access', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        sh 'docker build -t ilsoldier/eks-demo-app:${IMAGE_NAME} .'
-        sh 'echo $PASS | docker login -u $USER --password-stdin'
-        sh 'docker push ilsoldier/eks-demo-app:${IMAGE_NAME}'
-    }
+    sh '''
+    aws ecr get-login-password --region us-west-2 --profile iam-roles-anywhere | \
+    docker login --username AWS --password-stdin 851725525319.dkr.ecr.us-west-2.amazonaws.com
+    '''
+    sh 'docker build -t ${DOCKER_REPO}:${IMAGE_NAME} .'
+    sh 'docker push ${DOCKER_REPO}:${IMAGE_NAME}'
 }
 
 def deployApp() {
     echo 'deploying the application...'
-    // sh 'kubectl create deployment nginx-deployment --image=ilsoldier/eks-demo-app:${IMAGE_NAME}'
-    sh 'envsubst < Kubernetes/deployment.yaml | kubectl apply -f -'
-    sh 'envsubst < Kubernetes/service.yaml | kubectl apply -f -'
+    // Step 1: Check current deployment status (optional but useful for debugging)
+    sh '''
+    echo "Current Deployment Status:"
+    kubectl get deployments -n default
+    '''
+    
+    // Step 2: Update the deployment with the new image or configuration
+    sh '''
+    kubectl set image deployment/java-app java-app=${DOCKER_REPO}:${IMAGE_NAME} -n default
+    '''
+    
+    // Step 3: Verify the update (optional but recommended)
+    sh '''
+    echo "Updated Deployment Status:"
+    kubectl rollout status deployment/java-app -n default
+    '''
 }
 
 def commitToGithub(String sshkey, String reponame, String branchname) {
