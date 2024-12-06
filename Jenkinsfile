@@ -5,6 +5,12 @@ pipeline {
     tools {
         maven 'Maven'
     }
+    
+    environment {
+        DOCKER_REPO_SERVER = '851725525319.dkr.ecr.us-west-2.amazonaws.com'
+        DOCKER_REPO = "${DOCKER_REPO_SERVER}/eks-demo-app"
+    }
+
     stages {
         stage("init") {
             steps {
@@ -41,7 +47,6 @@ pipeline {
 
         stage("deploy") {
             environment {
-                // KUBECONFIG = credentials('kubeconfig')
                 APP_NAME = 'eks-demo-app'
             }
             steps {
@@ -54,7 +59,7 @@ pipeline {
         stage("commit to github") {
             steps {
                 script {
-                    gv.commitToGithub('github-key', 'devops-module11-demo', 'main')
+                    gv.commitToGithub('github-key', 'devops-module11-demo', 'with-ecr-to-eks')
                 }
             }
         }
